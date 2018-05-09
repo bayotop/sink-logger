@@ -5,7 +5,7 @@ Transparently log everything passed into known JavaScript sinks - Sink Logger ex
 
 Sink Logger is a Burp Suite Extension that allows to transparently monitor various JavaScripts sinks. All data passed into the defined sinks is logged into the browser's console. This is done by injecting a custom [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) initialization script into choosen HTTP responses and "proxyfing" all sinks.
 
-![Logs](https://github.com/bayotop/sink-logger/sink-logger.png "Sink Logger Filtered")
+![Logs](sink-logger.png?raw=true "Sink Logger Filtered")
 
 ### Technical details
 
