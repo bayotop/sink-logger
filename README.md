@@ -1,9 +1,9 @@
 # sink-logger
-Transparently log everything passed into known JavaScript sinks - Sink Logger extension for Burp.
+Transparently log all data passed into known JavaScript sinks - Sink Logger extension for Burp.
 
 ### Description
 
-Sink Logger is a Burp Suite Extension that allows to transparently monitor various JavaScript sinks. All data passed into the defined sinks is logged into the browser's console. This is done by injecting a custom [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) initialization script into chosen HTTP responses and "proxyfing" all sinks.
+Sink Logger is a Burp Suite Extension that allows to transparently monitor various JavaScript sinks. All data passed into the defined sinks is logged into the browser's console. This is done by injecting a custom [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) initialization script into chosen HTTP responses and "proxifying" all sinks.
 
 ![Logs](sink-logger.png?raw=true "Sink Logger Filtered")
 
@@ -27,7 +27,7 @@ var QF9iYXlvdG9w = QF9iYXlvdG9w || new Proxy({}, {
     }
 });
 ```
-- It "proxyfies" all sinks. Currently 3 different sink types are supported: **.innerHTML**, **eval()** and **document.write()**.
+- It "proxifies" all sinks. Currently 3 different sink types are supported: **.innerHTML**, **eval()** and **document.write()**.
 ```python
 self.sinkPatterns = {
     r'\.innerHTML=': '.innerHTML=QF9iYXlvdG9w.innerHTML=',
@@ -36,7 +36,7 @@ self.sinkPatterns = {
 }
 ```
 
-"Proxyfing" a sink means to edit existing JavaScript so that every sink is preceded by an assignment to the proxy:
+"Proxifying" a sink means to edit existing JavaScript so that every sink is preceded by an assignment to the proxy:
 
 ```JS
 x.innerHTML=x.trim(); // becomes x.innerHTML=QF9iYXlvdG9w.innerHTML=x.trim();

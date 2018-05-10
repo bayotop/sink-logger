@@ -1,10 +1,16 @@
-from burp import IProxyListener, IBurpExtender
+from burp import IBurpExtender, IProxyListener, ITab
+
+from java.awt import FlowLayout 
+from java.awt.event import ItemEvent, ItemListener
 from java.io import PrintWriter
+from javax.swing import JCheckBox, JPanel
+
 import re
 
-class BurpExtender(IBurpExtender, IProxyListener):
+class BurpExtender(IBurpExtender, IProxyListener, ITab):
     
-    def	registerExtenderCallbacks(self, callbacks):
+    # Implement IBurpExtender
+    def registerExtenderCallbacks(self, callbacks):
         # Keep some useful references
         self._callbacks = callbacks
         self._helpers = callbacks.getHelpers()
@@ -18,12 +24,19 @@ class BurpExtender(IBurpExtender, IProxyListener):
         # Register as a Proxy listener
         callbacks.registerProxyListener(self)
 
+        # Initialize and register UI
+        self.initUserInterface()
+        callbacks.addSuiteTab(self)
+
+        # Extension specific stuff
+        self.loggingEnabled = False
+
         self.scriptContentTypes = ["javascript", "ecmascript", "jscript", "json"]
         self.excludedContentTypes = ['text/css', "image/", "text/plain", "application/x-octet-stream"]
         self.commonHijackingProtections = ["for (;;);", ")]}'", "{} &&", "while(1);" ]
 
         # In Chrome console.warn shows an extremely useful stack trace and it's hidden by default so the output is not a mess (i.e. console.trace())
-        # Minimized version of this script is injected into responses
+        # Minified version of this script is injected into responses
         """
         var QF9iYXlvdG9w = QF9iYXlvdG9w || new Proxy({}, {
             set: function(target, key, value, receiver) {
@@ -51,10 +64,17 @@ class BurpExtender(IBurpExtender, IProxyListener):
 
         # CSP / SRI
         self.metaHeaderPattern = re.compile("<meta.*Content-Security-Policy.*>", flags=re.MULTILINE|re.IGNORECASE)
-        self.integrityAttributesPattern = re.compile("integrity=(.)", flags=re.IGNORECASE)          
+        self.integrityAttributesPattern = re.compile("integrity=(.)", flags=re.IGNORECASE)
 
+        self._stdout.println("GitHub: https://github.com/bayotop/sink-logger")
+        self._stdout.println("Contact: https://twitter.com/_bayotop")
+        self._stdout.println("")
+        self._stdout.println("Successfully initialized Sink Logger...")
+
+
+    # Implement IProxyListener
     def processProxyMessage(self, messageIsRequest, message):
-        if messageIsRequest:
+        if messageIsRequest or not self.loggingEnabled:
             return
 
         try:
@@ -121,3 +141,29 @@ class BurpExtender(IBurpExtender, IProxyListener):
         if "<body>" in response:
             return response.replace("<body>", "<body>" + self.proxyInitializationHTML, 1)
         return self.proxyInitializationHTML + response
+
+
+    # Implement ITab
+    def getTabCaption(self):
+        return "Sink Logger"
+    
+    def getUiComponent(self):
+        return self.configurationPanel
+
+    def initUserInterface(self):
+        class TriggerLoggingListener(ItemListener):
+            def __init__(self, extender):
+                self.extender = extender
+
+            def itemStateChanged(self, e):
+                if e.getStateChange() == ItemEvent.SELECTED:
+                    self.extender.loggingEnabled = True
+                else:
+                    self.extender.loggingEnabled = False
+
+        loggingTrigger = JCheckBox("Enable logging (clearing browser cache might be needed to reflect the change)")
+        loggingTrigger.addItemListener(TriggerLoggingListener(self))
+
+        self.configurationPanel = JPanel()
+        self.configurationPanel.setLayout(FlowLayout(FlowLayout.LEFT))
+        self.configurationPanel.add(loggingTrigger)
