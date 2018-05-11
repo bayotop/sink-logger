@@ -30,11 +30,14 @@ var QF9iYXlvdG9w = QF9iYXlvdG9w || new Proxy({}, {
 - It "proxifies" all sinks. Currently 3 different sink types are supported: **.innerHTML**, **eval()** and **document.write()**.
 ```python
 self.sinkPatterns = {
+    # pattern: replacement passed into re.sub()
     r'\.innerHTML=': '.innerHTML=QF9iYXlvdG9w.innerHTML=',
     r'eval\(([^)])': r'eval(QF9iYXlvdG9w.eval=\1',
     r'document\.write\(([^)])': r'document.write(QF9iYXlvdG9w.write=\1'
 }
 ```
+
+*Note: You can easily add custom sinks, or any other assignment / method call you want to proxify, by extending this dictionary. No other code changes are needed.*
 
 "Proxifying" a sink means to edit existing JavaScript so that every sink is preceded by an assignment to the proxy:
 

@@ -55,7 +55,7 @@ class BurpExtender(IBurpExtender, IProxyListener, ITab):
         self.proxyInitialization = "var QF9iYXlvdG9w=QF9iYXlvdG9w||new Proxy({},{set:function set(a,b,c,d){if(c!=void 0&&\"\"!==c){if((c+\"\").startsWith(\"[object\"))try{var e=JSON.stringify(c)}catch(f){}console.warn(\"Sink log (\"+b+\"): \"+(e===void 0?c:e))}return Reflect.set(a,b,c,d)}});"
         self.proxyInitializationHTML = "<script>%s</script>" % self.proxyInitialization
 
-        # pattern: replacement 
+        # pattern: replacement passed into re.sub()
         self.sinkPatterns = {
             r'\.innerHTML=': '.innerHTML=QF9iYXlvdG9w.innerHTML=',
             r'eval\(([^)])': r'eval(QF9iYXlvdG9w.eval=\1',
