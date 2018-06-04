@@ -59,12 +59,13 @@ class BurpExtender(IBurpExtender, IProxyListener, ITab):
         self.sinkPatterns = {
             r'\.innerHTML=': '.innerHTML=QF9iYXlvdG9w.innerHTML=',
             r'eval\(([^)])': r'eval(QF9iYXlvdG9w.eval=\1',
-            r'document\.write\(([^)])': r'document.write(QF9iYXlvdG9w.write=\1'
+            r'document\.write\(([^)])': r'document.write(QF9iYXlvdG9w.write=\1',
+            # r'\$\(([^)])': r'$(QF9iYXlvdG9w.jQuery=\1'
         }
 
         # CSP / SRI
         self.metaHeaderPattern = re.compile("<meta.*Content-Security-Policy.*>", flags=re.MULTILINE|re.IGNORECASE)
-        self.integrityAttributesPattern = re.compile("integrity=(.)", flags=re.IGNORECASE)
+        self.integrityAttributesPattern = re.compile("integrity(.{1,3})sha", flags=re.IGNORECASE)
 
         self._stdout.println("GitHub: https://github.com/bayotop/sink-logger")
         self._stdout.println("Contact: https://twitter.com/_bayotop")
@@ -89,8 +90,8 @@ class BurpExtender(IBurpExtender, IProxyListener, ITab):
             return
 
         # Get rid of CSP and SRI to ensure that the injected script executes
-        editedResponseHeaders = [x for x in responseHeaders if not "content-security-policy" in x.lower()]       
-        responseBody = self.integrityAttributesPattern.sub(r'integrity-x=\1', responseBody)
+        editedResponseHeaders = [x for x in responseHeaders if not "content-security-policy" in x.lower()] 
+        responseBody = self.integrityAttributesPattern.sub(r'integrityx\1sha', responseBody)           
         responseBody = self.metaHeaderPattern.sub("", responseBody)
         
         # "Proxify" sinks in response
@@ -139,7 +140,7 @@ class BurpExtender(IBurpExtender, IProxyListener, ITab):
         if "</title>" in response:
             return response.replace("</title>", "</title>" + self.proxyInitializationHTML, 1)
         if "<body>" in response:
-            return response.replace("<body>", "<body>" + self.proxyInitializationHTML, 1)
+            return response.replace("<body>", "<body>" + self.proxyInitializationHTML, 1)          
         return self.proxyInitializationHTML + response
 
 
