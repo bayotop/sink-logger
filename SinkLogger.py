@@ -57,7 +57,7 @@ class BurpExtender(IBurpExtender, IProxyListener, ITab):
 
         # pattern: replacement passed into re.sub()
         self.sinkPatterns = {
-            r'\.innerHTML=([^=])': r'.innerHTML=QF9iYXlvdG9w.innerHTML=\1',
+            r'\.innerHTML(|[ ])=([^=])': r'.innerHTML=QF9iYXlvdG9w.innerHTML=\2',
             r'eval\(([^)])': r'eval(QF9iYXlvdG9w.eval=\1',
             r'document\.write\(([^)])': r'document.write(QF9iYXlvdG9w.write=\1',
             # r'\$\(([^)])': r'$(QF9iYXlvdG9w.jQuery=\1'
