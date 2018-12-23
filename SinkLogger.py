@@ -61,6 +61,8 @@ class BurpExtender(IBurpExtender, IProxyListener, ITab):
             r'eval\(([^)])': r'eval(QF9iYXlvdG9w.eval=\1',
             r'document\.write\(([^)])': r'document.write(QF9iYXlvdG9w.write=\1',
             # r'\$\(([^)])': r'$(QF9iYXlvdG9w.jQuery=\1'
+            r'(\$|jQuery)(\((?:[^;]*))\.(add|append|after|before|html|prepend|replaceWith|wrap|wrapAll)\(([^)])': r'\1\2.\3(QF9iYXlvdG9w.\3=\4',
+            r'(\$|jQuery)\.(globalEval|parseHTML)\(([^)])': r'\1.\2(QF9iYXlvdG9w.\2=\3'
         }
 
         # CSP / SRI
