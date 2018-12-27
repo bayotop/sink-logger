@@ -57,11 +57,12 @@ class BurpExtender(IBurpExtender, IProxyListener, ITab):
 
         # pattern: replacement passed into re.sub()
         self.sinkPatterns = {
-            r'\.innerHTML\s*=([^=])': r'.innerHTML=QF9iYXlvdG9w.innerHTML=\1',
+            r'\.innerHTML\s*=([^=])': r'.innerHTML=QF9iYXlvdG9w.innerHTML=\1',          
             r'eval\(([^)])': r'eval(QF9iYXlvdG9w.eval=\1',
             r'document\.write\(([^)])': r'document.write(QF9iYXlvdG9w.write=\1',
-            # r'\$\(([^)])': r'$(QF9iYXlvdG9w.jQuery=\1' # Disabled by default because of excessive usage -> logs way to much stuff
-            r'(\$|jQuery)(\((?:[^;]*))\.(add|append|after|before|html|prepend|replaceWith|wrap|wrapAll)\(([^)])': r'\1\2.\3(QF9iYXlvdG9w.jQuery_\3=\4',
+            r'(document|window)\.location(?:\.href)?\s*=([^=])': r'\1.location=QF9iYXlvdG9w.location=\2',
+            r'(window|document)\.location\.replace\(([^)])': r'\1.location.replace(QF9iYXlvdG9w.location=\2',
+            # Other jQuery sinks will eventually pass data to innerHTML or eval() (globalEval uses "indirect" as eval alias)           
             r'(\$|jQuery)\.(globalEval|parseHTML)\(([^)])': r'\1.\2(QF9iYXlvdG9w.jQuery_\2=\3'
         }
 
