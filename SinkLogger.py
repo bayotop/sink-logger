@@ -60,9 +60,9 @@ class BurpExtender(IBurpExtender, IProxyListener, ITab):
             r'\.innerHTML\s*=([^=])': r'.innerHTML=QF9iYXlvdG9w.innerHTML=\1',
             r'eval\(([^)])': r'eval(QF9iYXlvdG9w.eval=\1',
             r'document\.write\(([^)])': r'document.write(QF9iYXlvdG9w.write=\1',
-            # r'\$\(([^)])': r'$(QF9iYXlvdG9w.jQuery=\1'
-            r'(\$|jQuery)(\((?:[^;]*))\.(add|append|after|before|html|prepend|replaceWith|wrap|wrapAll)\(([^)])': r'\1\2.\3(QF9iYXlvdG9w.\3=\4',
-            r'(\$|jQuery)\.(globalEval|parseHTML)\(([^)])': r'\1.\2(QF9iYXlvdG9w.\2=\3'
+            # r'\$\(([^)])': r'$(QF9iYXlvdG9w.jQuery=\1' # Disabled by default because of excessive usage -> logs way to much stuff
+            r'(\$|jQuery)(\((?:[^;]*))\.(add|append|after|before|html|prepend|replaceWith|wrap|wrapAll)\(([^)])': r'\1\2.\3(QF9iYXlvdG9w.jQuery_\3=\4',
+            r'(\$|jQuery)\.(globalEval|parseHTML)\(([^)])': r'\1.\2(QF9iYXlvdG9w.jQuery_\2=\3'
         }
 
         # CSP / SRI
