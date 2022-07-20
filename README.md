@@ -1,4 +1,7 @@
+**This repository is no longer maintained. See https://portswigger.net/burp/documentation/desktop/tools/dom-invader instead.**
+
 # sink-logger
+
 Transparently log all data passed into known JavaScript sinks - Sink Logger extension for Burp.
 
 ### Description
